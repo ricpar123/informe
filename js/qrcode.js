@@ -1,67 +1,59 @@
-function domReady(fn) {
-    if (
-        document.readyState === "complete" ||
-        document.readyState === "interactive"
-    ) {
-        setTimeout(fn, 1000);
-    } else {
-        document.addEventListener("DOMContentLoaded", fn);
-    }
-}
 
-function parseQR(qrText) {
-  // separa por saltos de línea, limpia espacios, y elimina vacíos
-  const parts = qrText
+
+function parseQR(textoQR) {
+  const partes = textoQR
     .split(/\r?\n/)
-    .map(s => s.trim())
+    .map(l => l.trim())
     .filter(Boolean);
 
-  // Esperamos 5 líneas
-  if (parts.length < 5) {
-    throw new Error("QR incompleto: faltan líneas.");
+  if (partes.length < 5) {
+    throw new Error("QR inválido: deben ser 5 líneas");
   }
 
   return {
-    cliente: parts[0],
-    descripcion: parts[1],
-    marca: parts[2],
-    modelo: parts[3],
-    serie: parts[4],
+    cliente: partes[0],
+    descripcion: partes[1],
+    marca: partes[2],
+    modelo: partes[3],
+    serie: partes[4],
   };
 }
 
-function irAInformeConQR(qrText) {
+function onScanSuccess(decodedText) {
+  console.log("QR leído:", decodedText);
+
   let data;
   try {
-    data = parseQR(qrText);
+    data = parseQR(decodedText);
   } catch (err) {
     alert(err.message);
     return;
   }
 
   sessionStorage.setItem("qr_equipo", JSON.stringify(data));
-  window.location.href = "/vistas/informe.html";
+
+  // Detener escaneo y redirigir
+  html5QrCode.stop().then(() => {
+    window.location.href = "/vistas/informe.html";
+  });
 }
 
+// --------- Inicialización ----------
+const html5QrCode = new Html5Qrcode("reader");
 
-domReady(function () {
-    let result = [];
+Html5Qrcode.getCameras().then(cameras => {
+  if (!cameras || cameras.length === 0) {
+    alert("No se encontraron cámaras");
+    return;
+  }
 
-    // If found you qr code
-    function onScanSuccess(decodeText, decodeResult) {
-        result = + decodeText, decodeResult;
-        //alert('resultado:', result);
-        //alert("You Qr is : " + decodeText, decodeResult);
-    }
-    
-
-    let htmlscanner = new Html5QrcodeScanner(
-        "my-qr-reader",
-        { fps: 10, qrbos: 250 }
-    );
-    htmlscanner.render(onScanSuccess);
-
-    irAInformeConQR(result);
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    onScanSuccess
+  );
+}).catch(err => {
+  console.error(err);
+  alert("Error accediendo a la cámara");
 });
-
 
