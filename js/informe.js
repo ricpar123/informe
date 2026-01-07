@@ -249,9 +249,8 @@ let firmaT = '';
 
     let _body = {tecnico, cliente, descripcion, marca, modelo, serie, 
                 motivo, tipoTrabajo, presupuesto, fechaInicio, horaInicio, 
-                fechaFin, horaFin, horasNormales, horasLab, horasViaje, 
-                horasTotales, servicio, obs, recibido, ci, firma, firmaT, 
-                fecha, email1, email2, email3, email4 };
+                fechaFin, horaFin, servicio, obs, recibido, firma, firmaT, 
+                fecha };
 
     console.log('datos a enviar: ', _body);
     //enviar el formulario al service worker
