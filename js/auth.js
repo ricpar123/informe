@@ -14,29 +14,11 @@ function validar(e) {
             alert("Error, los campos deben ser completados");
     } else {
             e.preventDefault();
-           console.log('nombre, clave: del formulario', nombre.value, clave.value);
+           console.log('nombre, clave del formulario', nombre.value, clave.value);
            nombreUsuario = nombre.value;
            claveUsuario = (clave.value).toString();
 
-          if(localStorage.getItem('nombre')){
-              let user = localStorage.getItem('nombre');
-              let pwd = localStorage.getItem('clave');
-              console.log('datos localStorage:', user, pwd);
-          
-          
-           if(user == nombreUsuario && pwd == claveUsuario) {
-            if(localStorage.getItem('rol') == 'admin'){
-                window.open('../vistas/menu.html');
-            }else{
-                window.open('../vistas/informe.html');
-            }
-
-           }else{
-            alert('Clave o nombre incorrectos');
-            return;
-           }
-           
-        }else{
+         
 
             let _body = {userid: nombreUsuario, clave: claveUsuario};
            console.log('body ', _body);
@@ -59,15 +41,13 @@ function validar(e) {
                     rolUsuario = data.usuario.rol;
                     console.log('Rol: ', rolUsuario);
 
-                    localStorage.setItem('nombre', nombreUsuario);
-                    localStorage.setItem('clave', claveUsuario);
-                    localStorage.setItem('rol', rolUsuario);
+                    
 
 
                     if(rolUsuario == 'admin'){
                         window.open('/vistas/menu.html');
                     }else{
-                        window.open('/vistas/informe.html');
+                        window.open('/vistas/cambioPantalla.html');
                     }
                 }
                 
@@ -97,11 +77,11 @@ function validar(e) {
             
             
             
-    }
+}
 
        
 
-}
+
 
         
     

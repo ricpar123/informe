@@ -6,6 +6,33 @@ Notification.requestPermission(function(status) {
     console.log('Notification permission status:', status);
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  const raw = sessionStorage.getItem("qr_equipo");
+  if (!raw) return;
+
+  let data;
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    sessionStorage.removeItem("qr_equipo");
+    return;
+  }
+
+  const set = (id, value) => {
+    const el = document.getElementById(id);
+    if (el && value != null) el.value = value;
+  };
+
+  set("cliente", data.cliente);
+  set("descripcion", data.descripcion);
+  set("marca", data.marca);
+  set("modelo", data.modelo);
+  set("serie", data.serie);
+
+  // usar una sola vez
+  sessionStorage.removeItem("qr_equipo");
+});
+let usuarios = [];
 
 
 async function fetchUsuarios(){
