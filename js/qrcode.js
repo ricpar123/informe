@@ -50,8 +50,8 @@ domReady(function () {
     // If found you qr code
     function onScanSuccess(decodeText, decodeResult) {
         result = + decodeText, decodeResult;
-        alert('resultado:', result);
-        alert("You Qr is : " + decodeText, decodeResult);
+        //alert('resultado:', result);
+        //alert("You Qr is : " + decodeText, decodeResult);
     }
     
 
