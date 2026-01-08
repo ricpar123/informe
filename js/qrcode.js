@@ -1,7 +1,9 @@
 
 
-function parseQR(textoQR) {
-  const partes = textoQR
+/* global Html5QrcodeScanner */
+
+function parseQR(texto) {
+  const partes = texto
     .split(/\r?\n/)
     .map(l => l.trim())
     .filter(Boolean);
@@ -19,41 +21,34 @@ function parseQR(textoQR) {
   };
 }
 
-function onScanSuccess(decodedText) {
-  console.log("QR leído:", decodedText);
+document.addEventListener("DOMContentLoaded", () => {
+  const onScanSuccess = (decodedText) => {
+    console.log("✅ QR LEÍDO:", decodedText);
 
-  let data;
-  try {
-    data = parseQR(decodedText);
-  } catch (err) {
-    alert(err.message);
-    return;
-  }
+    let data;
+    try {
+      data = parseQR(decodedText);
+    } catch (e) {
+      alert(e.message);
+      return;
+    }
 
-  sessionStorage.setItem("qr_equipo", JSON.stringify(data));
+    sessionStorage.setItem("qr_equipo", JSON.stringify(data));
 
-  // Detener escaneo y redirigir
-  html5QrCode.stop().then(() => {
-    window.location.href = "/vistas/informe.html";
-  });
-}
+    scanner.clear().then(() => {
+      window.location.href = "/vistas/informe.html";
+    });
+  };
 
-// --------- Inicialización ----------
-const html5QrCode = new Html5Qrcode("reader");
-
-Html5Qrcode.getCameras().then(cameras => {
-  if (!cameras || cameras.length === 0) {
-    alert("No se encontraron cámaras");
-    return;
-  }
-
-  html5QrCode.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 250 },
-    onScanSuccess
+  const scanner = new Html5QrcodeScanner(
+    "reader",
+    {
+      fps: 10,
+      qrbox: { width: 300, height: 300 }, // 🔴 CLAVE
+      rememberLastUsedCamera: true,
+    },
+    false
   );
-}).catch(err => {
-  console.error(err);
-  alert("Error accediendo a la cámara");
-});
 
+  scanner.render(onScanSuccess);
+});
