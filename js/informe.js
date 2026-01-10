@@ -133,46 +133,46 @@ window.signatureClear2 = () => {
   signaturePad2.clear();
 };
 
+const formulario = document.getElementById('formulario');
+
+formulario.addEventListener('submit', async (e) => {
+    console.log('submit formulario');
+    e.preventDefault();
+
+    if(!formulario.checkValidity()){
+        formulario.reportValidity();
+        return;
+    }
+
+    const datos = obtenerDatos(formulario);
+    console.log('datos formulario:', datos);
+
+
+    function obtenerDatos(form) {
+        document.getElementById('firma').value = 
+        signaturePad1.isEmpty() ? '' : signaturePad1.toDataURL('image/png');
+        
+        document.getElementById('firmaT').value = 
+        signaturePad2.isEmpty() ? '' : signaturePad2.toDataURL('image/png');
+        const fd = new FormData(form);
+        const obj = Object.fromEntries(fd.entries());
+        const tecnico = fd.getAll('tecnico');
+        obj.tecnico = tecnico;
+
+        return obj;
+    }
+
+    const res = await fetch('https://servering-production.up.railway.app/informes', {
+        method: "POST",
+        body : JSON.stringify(datos),
+        headers: {"Content-Type": "application/json"}
+    });
+    const data = await res.json();
+    console.log('respuesta del servidor:', data);
+
+});
     
-
-
-
-
-
-
 /*
-var canvasC = document.getElementById("signature");
-
-       function resizeCanvasC() {
-           var ratio = Math.max(window.devicePixelRatio || 1, 1);
-           canvasC.width = canvas.offsetWidth * ratio;
-           canvasC.height = canvas.offsetHeight * ratio;
-           canvasC.getContext("2d").scale(ratio, ratio);
-       }
-       window.onresize = resizeCanvasC;
-       resizeCanvasC();
-
-var canvasT = document.getElementById("signatureT");
-
-    function resizeCanvasT() {
-           var ratio = Math.max(window.devicePixelRatio || 1, 1);
-           canvasT.width = canvasT.offsetWidth * ratio;
-           canvasT.height = canvasT.offsetHeight * ratio;
-           canvasT.getContext("2d").scale(ratio, ratio);
-       }
-       window.onresize = resizeCanvasT;
-       resizeCanvasT();
-
-       var signaturePadC = new SignaturePad(canvasC, {
-        backgroundColor: 'rgb(250,250,250)'
-       });
-
-       var signaturePadT = new SignaturePad(canvasT, {
-        backgroundColor: 'rgb(250,250,250)'
-       });
-*/
-
-
 var formulario = document.getElementById("formulario");
 
 var tecnico = [];
@@ -329,7 +329,7 @@ let firmaT = '';
     formulario.addEventListener('submit', validar);
 
 // Detectar cambios de conexión
-/*
+
 
 function isOnline() {
 
